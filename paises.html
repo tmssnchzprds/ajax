@@ -1,0 +1,76 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>AJAX</title>
+<script type="text/javascript">
+function AjaxCrearObjeto()
+	{
+		var obj;
+		if (window.XMLHttpRequest) // no es IE
+		{
+			obj=new XMLHttpRequest();
+		}
+		else 
+		{
+			try 
+			{
+				obj=new ActiveXObject("Microsoft.XMLHTTP");	
+			}
+			catch(e)
+			{
+			 alert("Tu navegador no soporta la tecnologia AJAX");	
+			}
+		}
+		return obj;	
+	}
+function leerDatos(objPais)
+	{
+	objAjax=AjaxCrearObjeto();
+	objAjax.open("GET","paises-json.php?pa="+objPais.value,true);
+	objAjax.onreadystatechange=comprobar;
+	objAjax.send(null);
+	}
+function comprobar()
+	{
+	var objRespuesta=document.getElementById("respuesta");
+	var objLoader=document.getElementById("loader");
+	if (objAjax.readyState==4)
+		{
+		objLoader.innerHTML="";
+		/* XML
+		var tabla="<table border='1'>";
+			tabla+="<tr><th>Capital</th><th>superficie</th><th>idioma</th><th>poblacion</th></tr>";
+			var xml=ObjAjax.responseXML;
+			var capital=xml.getElementsByTagName("capital")[0].firstChild.nodeValue;
+			var superficie=xml.getElementsByTagName("superficie")[0].firstChild.nodeValue;
+			var idioma=xml.getElementsByTagName("idioma")[0].firstChild.nodeValue;
+			var poblacion=xml.getElementsByTagName("poblacion")[0].firstChild.nodeValue;
+			tabla+="<tr><td>"+capital+"</td><td>"+superficie+"</td><td>"+idioma+"</td><td>"+poblacion+"</td></tr>";
+			tabla+="</table>";
+		objRespuesta.innerHTML=tabla;
+		*/
+		var jsonRespuesta=eval ('('+objAjax.responseText+')');
+		var HTML="";
+		HTML+="Capital:"+jsonRespuesta.capital+"<br>";
+		objRespuesta.innerHTML=HTML;
+		}else
+		{
+		objLoader.innerHTML="<img src='ajax-loader.gif'>";
+		}
+	}
+</script>
+</head>
+
+<body>
+<select name="paises" onChange="leerDatos(this)">
+	<option>Selecciona un pais</option>
+    <option value="Chile">Chile</option>
+    <option value="Spain">España</option>
+    <option value="Brasil">Brasil</option>
+</select>
+<div id="respuesta"></div>
+<div id="loader"></div>
+
+</body>
+</html>

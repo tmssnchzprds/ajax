@@ -1,0 +1,54 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>AJAX</title>
+<script type="text/javascript" src="jquery-1.9.1.js"></script>
+<script type="text/javascript">
+    $(document).ready(function() {
+		$("#respuesta").hide();
+		$("#provincia").change(function(){
+			var idProvincia=$(this).val();
+			$.ajax({
+				url:"listapromociones-json.php",
+				dataType:"json",
+				type:"GET",
+				data:{Provincia:idProvincia},
+				success: function(json){
+			$("#respuesta").show();
+			$("#datos").html("")
+			var contador=0;
+			$.each(json,function(indice,valor){
+				contador++;
+				var HTML="<tr><td>"+json[indice].cod_promocion+"</td>";
+				HTML+="<td>"+json[indice].NombrePromo+"</td>";
+				HTML+="<td><img src=\""+json[indice].FotoPromocion+"\"></td></tr>";
+				$("#datos").append(HTML);
+				});	
+			$("#datos").append("<tr><td colspan='3'>Total "+contador+" promociones encontradas</td></tr>");	
+					}
+			});
+		});
+	});
+</script>
+</head>
+
+<body>
+Seleccione la provincia para ver las Promociones: 
+<select name="provincia" id="provincia">
+    <option value="3">Alicante</option>
+    <option value="8">Barcelona</option>
+    <option value="29">Malaga</option>
+</select>
+<div id="respuesta">
+<table border='1'>
+<thead>
+<tr><th>Cod Promocion</th><th>Nombre</th><th>Imagen</th></tr>
+</thead>
+<tbody id="datos">
+</tbody>
+</table></div>
+<div id="loader"></div>
+
+</body>
+</html>

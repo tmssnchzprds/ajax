@@ -1,0 +1,69 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>AJAX</title>
+<script type="text/javascript">
+function AjaxCrearObjeto()
+	{
+		var obj;
+		if (window.XMLHttpRequest) // no es IE
+		{
+			obj=new XMLHttpRequest();
+		}
+		else 
+		{
+			try 
+			{
+				obj=new ActiveXObject("Microsoft.XMLHTTP");	
+			}
+			catch(e)
+			{
+			 alert("Tu navegador no soporta la tecnologia AJAX");	
+			}
+		}
+		return obj;	
+	}
+function leerDatos(objProvincia)
+	{
+	objAjax=AjaxCrearObjeto();
+	objAjax.open("GET","listapromociones-json.php?Provincia="+objProvincia.value,true);
+	objAjax.onreadystatechange=comprobar;
+	objAjax.send(null);
+	}
+function comprobar()
+	{
+	var objRespuesta=document.getElementById("respuesta");
+	var objLoader=document.getElementById("loader");
+	if (objAjax.readyState==4)
+		{
+		objLoader.innerHTML="";
+		var jsonRespuesta=eval ('('+objAjax.responseText+')');
+		var HTML="<table border='1'>";
+		HTML+="<tr><th>Cod Promocion</th><th>Nombre</th><th>Imagen</th></tr>";
+		for(var i=0;i<=jsonRespuesta.length-1;i++)
+		{
+		HTML+="<tr><td>"+jsonRespuesta[i].cod_promocion+"</td><td>"+jsonRespuesta[i].NombrePromo+"</td><td><img src=\""+jsonRespuesta[i].FotoPromocion+"\"></td></tr>";
+		}
+		HTML+="</table>";
+		objRespuesta.innerHTML=HTML;
+		}else
+		{
+		objLoader.innerHTML="<img src='ajax-loader.gif'>";
+		}
+	}
+</script>
+</head>
+
+<body>
+Seleccione la provincia para ver las Promociones: 
+<select name="provincia" onChange="leerDatos(this)">
+    <option value="3">Alicante</option>
+    <option value="8">Barcelona</option>
+    <option value="29">Malaga</option>
+</select>
+<div id="respuesta"></div>
+<div id="loader"></div>
+
+</body>
+</html>

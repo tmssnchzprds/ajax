@@ -1,0 +1,68 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>AJAX</title>
+<script type="text/javascript">
+function AjaxCrearObjeto()
+	{
+		var obj;
+		if (window.XMLHttpRequest) // no es IE
+		{
+			obj=new XMLHttpRequest();
+		}
+		else 
+		{
+			try 
+			{
+				obj=new ActiveXObject("Microsoft.XMLHTTP");	
+			}
+			catch(e)
+			{
+			 alert("Tu navegador no soporta la tecnologia AJAX");	
+			}
+		}
+		return obj;	
+	}
+function leerDatos()
+	{
+	objNombreFichero=document.getElementById("nombreFichero");
+	objAjax=AjaxCrearObjeto();
+	objAjax.open("GET",objNombreFichero.value,true);
+	objAjax.onreadystatechange=comprobar;
+	objAjax.send(null);
+	}
+function comprobar()
+	{
+	var objContenido=document.getElementById("contenido");
+	var objLoader=document.getElementById("loader");
+	if (objAjax.readyState==4)
+		{
+			switch(objAjax.status) {
+			case 200:objContenido.innerHTML=objAjax.responseText;
+			break;
+			case 404:objContenido.innerHTML="No encuentro el fichero: "+objNombreFichero.value;
+			break;
+			default:objContenido.innerHTML="Error desconocido";
+			}
+			
+		objLoader.innerHTML="";
+		
+		}else
+		{
+		objLoader.innerHTML="<img src='ajax-loader.gif'>";
+		}
+	}
+</script>
+</head>
+
+<body>
+<form name="formulario">
+Introduca el nombre del fichero que desea mostrar:<input type="text" name="nombreFichero" id="nombreFichero">
+<input type="button" name="traer" value="Traer" onClick="leerDatos()">
+</form>
+<div id="contenido"></div>
+<div id="loader"></div>
+
+</body>
+</html>

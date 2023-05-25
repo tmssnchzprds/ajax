@@ -1,0 +1,56 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>AJAX</title>
+<script type="text/javascript">
+function AjaxCrearObjeto()
+	{
+		var obj;
+		if (window.XMLHttpRequest) // no es IE
+		{
+			obj=new XMLHttpRequest();
+		}
+		else 
+		{
+			try 
+			{
+				obj=new ActiveXObject("Microsoft.XMLHTTP");	
+			}
+			catch(e)
+			{
+			 alert("Tu navegador no soporta la tecnologia AJAX");	
+			}
+		}
+		return obj;	
+	}
+function leerDatos()
+	{
+	objAjax=AjaxCrearObjeto();
+	objAjax.open("GET","prueba.php",true);
+	objAjax.onreadystatechange=comprobar;
+	objAjax.send(null);
+	}
+function comprobar()
+	{
+	var objRespuesta=document.getElementById("respuesta");
+	var objLoader=document.getElementById("loader");
+	if (objAjax.readyState==4)
+		{
+		objLoader.innerHTML="";
+		objRespuesta.innerHTML=objAjax.responseText;
+		}else
+		{
+		objLoader.innerHTML="<img src='ajax-loader.gif'>";
+		}
+	}
+</script>
+</head>
+
+<body>
+<input type="button" value="ajax basico" onClick="leerDatos()">
+<div id="respuesta"></div>
+<div id="loader"></div>
+
+</body>
+</html>
